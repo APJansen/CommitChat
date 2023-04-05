@@ -1,0 +1,29 @@
+{
+  "name": "CommitChat",
+  "version": "1.0.0",
+  "description": "Easily copy ChatGPT conversations to add to Github commits.",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/APJansen/CommitChat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/APJansen/CommitChat/issues"
+  },
+  "homepage": "https://github.com/APJansen/CommitChat#readme",
+  "dependencies": {
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
