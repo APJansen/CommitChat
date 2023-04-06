@@ -8,11 +8,13 @@ This extension is meant to simplify that process.
 ## Usage
 1. Go to https://chat.openai.com/chat
 2. Click on the relevant prompts\*, both prompt and answer are selected.
+
 \*: not on the text itself but on the blank space to the left of it.
-3. After selecting all relevant prompts, press ctrl+shift+c to copy.
-They will now be in your clipboard, ordered chronologically and formatted for github.
+
+The messages will now be in your clipboard, ordered chronologically and formatted for github.
+
 4. Paste as a comment on the related commit.
-5. Press ctrl+shift+x to unselect everything.
+5. Press ctrl+shift+x to unselect everything (or click on the prompts again).
 
 ## Installation
 To install this as a chrome extension,

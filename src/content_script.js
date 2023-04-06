@@ -7,7 +7,6 @@ const USER_MESSAGE_CLASS = 'group w-full text-gray-800 dark:text-gray-100 border
 const USER_TEXT_CLASS = '.min-h-\\[20px\\].flex.flex-col.items-start.gap-4.whitespace-pre-wrap';
 const MODEL_TEXT_CLASS = '.markdown.prose.w-full.break-words.dark\\:prose-invert.light';
 
-const COPY_HOTKEY = 'KeyC'
 const UNSELECT_HOTKEY = 'KeyX'
 
 const SELECTED_USER_CLASS = 'selected-user-lightblue';
@@ -54,6 +53,9 @@ document.body.addEventListener('click', (event) => {
 
     const siblingElement = targetElement.nextElementSibling;
     siblingElement.classList.toggle(SELECTED_MODEL_CLASS);
+
+    // Automatically copy the content to the clipboard when a new message is selected or unselected
+    copySelectedMessages();
   }
 });
 
@@ -93,33 +95,33 @@ function getModelName() {
   return modelName;
 }
 
+function copySelectedMessages() {
+  const selectedElements = document.querySelectorAll('.' + SELECTED_USER_CLASS);
+  const modelName = getModelName();
+
+  let contentToCopy = '## Relevant conversation with ' + modelName + '\n\n';
+  const turndownService = new TurndownService();
+  customCodeBlockRule(turndownService);
+
+  selectedElements.forEach((element) => {
+    const userInnerHTML = getInnerHTMLFromElement(element, USER_TEXT_CLASS);
+    const modelInnerHTML = getInnerHTMLFromElement(element.nextElementSibling, MODEL_TEXT_CLASS);
+
+    const userText = element.querySelector(USER_TEXT_CLASS).textContent;
+
+    const modelMarkdown = turndownService.turndown(modelInnerHTML);
+
+    const userQuote = addQuote(userText)
+    const modelQuote = addQuote(modelMarkdown)
+
+    contentToCopy += `### Me:\n${userQuote}\n\n### ${modelName}:\n${modelQuote}\n\n`;
+  });
+
+  copyTextToClipboard(contentToCopy);
+  console.log(`Copied user and model messages to clipboard: "${contentToCopy}"`);
+}
+
 document.addEventListener('keydown', (event) => {
-  if (event.ctrlKey && event.shiftKey && event.code === COPY_HOTKEY) {
-    const selectedElements = document.querySelectorAll('.' + SELECTED_USER_CLASS);
-    const modelName = getModelName();
-
-    let contentToCopy = '## Relevant conversation with ' + modelName + '\n\n';
-    const turndownService = new TurndownService();
-    customCodeBlockRule(turndownService);
-
-    selectedElements.forEach((element) => {
-      const userInnerHTML = getInnerHTMLFromElement(element, USER_TEXT_CLASS);
-      const modelInnerHTML = getInnerHTMLFromElement(element.nextElementSibling, MODEL_TEXT_CLASS);
-
-      const userText = element.querySelector(USER_TEXT_CLASS).textContent;
-
-      const modelMarkdown = turndownService.turndown(modelInnerHTML);
-
-      const userQuote = addQuote(userText)
-      const modelQuote = addQuote(modelMarkdown)
-
-      contentToCopy += `### Me:\n${userQuote}\n\n### ${modelName}:\n${modelQuote}\n\n`;
-    });
-
-    copyTextToClipboard(contentToCopy);
-    console.log(`Copied user and model messages to clipboard: "${contentToCopy}"`);
-  }
-  
   if (event.ctrlKey && event.shiftKey && event.code === UNSELECT_HOTKEY) {
     clearSelections();
   }
