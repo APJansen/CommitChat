@@ -1,11 +1,9 @@
-// contentScript.js
+// content_script.js
 import TurndownService from 'turndown';
 
 
 const MODEL_NAME_CLASS = '.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
 const USER_MESSAGE_CLASS = 'group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 dark:bg-gray-800';
-const USER_TEXT_CLASS = '.min-h-\\[20px\\].flex.flex-col.items-start.gap-4.whitespace-pre-wrap';
-const MODEL_TEXT_CLASS = '.markdown.prose.w-full.break-words.dark\\:prose-invert.light';
 
 const UNSELECT_HOTKEY = 'KeyX'
 
@@ -17,10 +15,6 @@ function hasMatchingClasses(element, user_class) {
   const elementClassList = [...element.classList];
 
   return userClassList.every((className) => elementClassList.includes(className));
-}
-
-function getInnerHTMLFromElement(element, className) {
-  return element.querySelector(className).innerHTML;
 }
 
 function copyTextToClipboard(text) {
@@ -103,16 +97,15 @@ function copySelectedMessages() {
   const turndownService = new TurndownService();
   customCodeBlockRule(turndownService);
 
-  selectedElements.forEach((element) => {
-    const userInnerHTML = getInnerHTMLFromElement(element, USER_TEXT_CLASS);
-    const modelInnerHTML = getInnerHTMLFromElement(element.nextElementSibling, MODEL_TEXT_CLASS);
+  selectedElements.forEach((userElement) => {
+    const userText = userElement.textContent;
 
-    const userText = element.querySelector(USER_TEXT_CLASS).textContent;
+    const modelElement = userElement.nextElementSibling;
+    const modelMarkdown = turndownService.turndown(modelElement.innerHTML);
 
-    const modelMarkdown = turndownService.turndown(modelInnerHTML);
-
-    const userQuote = addQuote(userText)
-    const modelQuote = addQuote(modelMarkdown)
+    // First strip "1 / 1" from the beginning, then add a quote
+    const userQuote = addQuote(userText.substring(5));
+    const modelQuote = addQuote(modelMarkdown.substring(5));
 
     contentToCopy += `### Me:\n${userQuote}\n\n### ${modelName}:\n${modelQuote}\n\n`;
   });
