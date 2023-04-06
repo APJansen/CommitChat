@@ -5,6 +5,11 @@ To share how you used GPT, it would be useful to link the relevant pieces of the
 Without an API for GPT4 this is quite tedious.
 This extension is meant to simplify that process.
 
+
+![Demo](./demo.gif)
+Here is a quick demo, I've asked GPT4 to suggest some changes to this repo, done that and committed the changes.
+Then I click to copy the chat and press ctrl+v to paste it as a comment on the commit.
+
 ## Usage
 1. Go to https://chat.openai.com/chat
 2. Click on the relevant prompts\*, both prompt and answer are selected.
