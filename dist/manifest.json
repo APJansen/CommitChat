@@ -17,8 +17,6 @@
     }
   },
   "permissions": [
-    "activeTab",
-    "storage",
     "clipboardWrite"
   ],
   "content_scripts": [
