@@ -5,6 +5,8 @@ import TurndownService from 'turndown';
 const MODEL_NAME_CLASS = '.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
 const USER_MESSAGE_CLASS = 'group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 dark:bg-gray-800';
 const COUNTER_CLASS = 'flex-grow.flex-shrink-0';
+const USER_TEXT_CLASS = 'min-h-\[20px\] flex flex-col items-start gap-4 whitespace-pre-wrap';
+const USER_TEXT_CLASS_EDIT = 'm-0 resize-none border-0 bg-transparent p-0 focus\:ring-0 focus-visible\:ring-0';
 
 const DEFAULT_MODEL_NAME = 'ChatGPT';
 
@@ -44,11 +46,16 @@ function clearSelections() {
 
 document.body.addEventListener('click', (event) => {
   const targetElement = event.target;
+  console.log(targetElement.classList);
 
   // Check if the clicked element or any of its ancestors has matching classes
   const promptElement = findAncestorWithMatchingClasses(targetElement, USER_MESSAGE_CLASS);
 
-  if (promptElement) {
+  // Exclude the actual text to prevent interfering with normal copy paste and editing
+  const userTextElement = hasMatchingClasses(targetElement, USER_TEXT_CLASS);
+  const userEditElement = hasMatchingClasses(targetElement, USER_TEXT_CLASS_EDIT);
+
+  if (promptElement && !userTextElement && !userEditElement) {
     promptElement.classList.toggle(SELECTED_USER_CLASS);
 
     const replyElement = promptElement.nextElementSibling;
