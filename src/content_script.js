@@ -44,16 +44,30 @@ function clearSelections() {
 document.body.addEventListener('click', (event) => {
   const targetElement = event.target;
 
-  if (hasMatchingClasses(targetElement, USER_MESSAGE_CLASS)) {
-    targetElement.classList.toggle(SELECTED_USER_CLASS);
+  // Check if the clicked element or any of its ancestors has matching classes
+  const promptElement = findAncestorWithMatchingClasses(targetElement, USER_MESSAGE_CLASS);
 
-    const siblingElement = targetElement.nextElementSibling;
-    siblingElement.classList.toggle(SELECTED_MODEL_CLASS);
+  if (promptElement) {
+    promptElement.classList.toggle(SELECTED_USER_CLASS);
+
+    const replyElement = promptElement.nextElementSibling;
+    replyElement.classList.toggle(SELECTED_MODEL_CLASS);
 
     // Automatically copy the content to the clipboard when a new message is selected or unselected
     copySelectedMessages();
   }
 });
+
+function findAncestorWithMatchingClasses(element, classList) {
+  let currentElement = element;
+  while (currentElement) {
+    if (hasMatchingClasses(currentElement, classList)) {
+      return currentElement;
+    }
+    currentElement = currentElement.parentElement;
+  }
+  return null;
+}
 
 function customCodeBlockRule(turndownService) {
   turndownService.addRule('codeBlock', {
