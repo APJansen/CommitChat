@@ -4,6 +4,7 @@ import TurndownService from 'turndown';
 
 const MODEL_NAME_CLASS = '.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
 const USER_MESSAGE_CLASS = 'group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 dark:bg-gray-800';
+const COUNTER_CLASS = 'flex-grow.flex-shrink-0';
 
 const DEFAULT_MODEL_NAME = 'ChatGPT';
 
@@ -105,6 +106,27 @@ function getModelName() {
   return modelName;
 }
 
+function copyUserMessage(userElement) {
+  const userTextAll = userElement.textContent;
+  const userText = removeCounter(userTextAll, userElement);
+  const userMessage = addQuote(userText);
+  return userMessage;
+}
+
+function copyModelMessage(modelElement, turnDownService) {
+  const modelHTML = modelElement.innerHTML;
+  const modelMarkdown = turnDownService.turndown(modelHTML);
+  const modelText = removeCounter(modelMarkdown, modelElement);
+  const modelMessage = addQuote(modelText);
+  return modelMessage;
+}
+
+function removeCounter(text, element) {
+  const counterElement = element.querySelector('.' + COUNTER_CLASS);
+  const counterText = counterElement ? counterElement.textContent : '';
+  return text.replace(new RegExp(`^${counterText}|${counterText}$`, 'g'), '').trim();
+}
+
 function copySelectedMessages() {
   const selectedElements = document.querySelectorAll('.' + SELECTED_USER_CLASS);
   const modelName = getModelName();
@@ -114,16 +136,12 @@ function copySelectedMessages() {
   customCodeBlockRule(turndownService);
 
   selectedElements.forEach((userElement) => {
-    const userText = userElement.textContent;
+    const userMessage = copyUserMessage(userElement);
 
     const modelElement = userElement.nextElementSibling;
-    const modelMarkdown = turndownService.turndown(modelElement.innerHTML);
+    const modelMessage = copyModelMessage(modelElement, turndownService);
 
-    // First strip "1 / 1" from the beginning, then add a quote
-    const userQuote = addQuote(userText.substring(5));
-    const modelQuote = addQuote(modelMarkdown.substring(5));
-
-    contentToCopy += `### Me:\n${userQuote}\n\n### ${modelName}:\n${modelQuote}\n\n`;
+    contentToCopy += `### Me:\n${userMessage}\n\n### ${modelName}:\n${modelMessage}\n\n`;
   });
 
   copyTextToClipboard(contentToCopy);
