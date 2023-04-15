@@ -5,6 +5,8 @@ import TurndownService from 'turndown';
 const MODEL_NAME_CLASS = '.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
 const USER_MESSAGE_CLASS = 'group w-full text-gray-800 dark:text-gray-100 border-b border-black/10 dark:border-gray-900/50 dark:bg-gray-800';
 
+const DEFAULT_MODEL_NAME = 'ChatGPT';
+
 const UNSELECT_HOTKEY = 'KeyX'
 
 const SELECTED_USER_CLASS = 'selected-user-lightblue';
@@ -79,7 +81,7 @@ function getModelName() {
 
   if (!modelInfoElement) {
     console.error('Model information element not found.');
-    return;
+    return DEFAULT_MODEL_NAME;
   }
 
   const modelText = modelInfoElement.textContent;
